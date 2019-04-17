@@ -24,13 +24,21 @@ consonent_path = 'devanagari-character-dataset/nhcd/consonants'
 numerals_path = 'devanagari-character-dataset/nhcd/numerals'
 vowels_path = 'devanagari-character-dataset/nhcd/vowels'
 
-# Just looking at Numbers
-directories = sorted(os.listdir(numerals_path))
-files = sorted(os.listdir("%s/%s" % (numerals_path, directories[0])))
-print(directories, files)
 
-# Loading the image and grayscaling to reduce 3 channels to 1
-loadedimg = opencv.imread("%s/%s/%s" %
-                          (numerals_path, directories[0], files[0]))
-img = opencv.cvtColor(loadedimg, opencv.COLOR_BGR2GRAY)
-height, width = img.shape
+def convert_to_npy():
+    numeral_value = []
+    numeral_label = []
+    directories = sorted(os.listdir(numerals_path))
+    for current_dir in directories:
+        files = sorted(os.listdir("%s/%s" %
+                                  (numerals_path, current_dir)))
+        for image in files:
+            print("reading : %s/%s/%s" %
+                  (numerals_path, current_dir, image))
+            loadedimg = opencv.imread("%s/%s/%s" %
+                                      (numerals_path, current_dir, image))
+            img = opencv.cvtColor(loadedimg, opencv.COLOR_BGR2GRAY)
+            numeral_value.append(img)
+            numeral_label.append(int(current_dir))
+    np.save("numeral_value.npy", numeral_value)
+    np.save("numeral_label.npy", numeral_label)
