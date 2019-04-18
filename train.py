@@ -42,22 +42,22 @@ def get_model():
     return model
 
 
-def train():
-    values, labels = get_data("numeral_value.npy", "numeral_label.npy")
+def train_model():
+    values, labels = get_data("data/numeral_value.npy", "data/numeral_label.npy")
     values = tf.keras.utils.normalize(values, axis=1)
     model = get_model()
     print(values.shape, labels.shape)
     session = model.fit(values, labels, epochs=20)
-    model.save("hindi-num.model")
+    model.save("data/hindi-num.model")
     print("----\nTesting\n----")
     history = model.fit(values, labels, epochs=5)
     print("Test Loss :", history)
     print("Test Accuracy :", history)
 
 
-def test():
-    values, labels = get_data("numeral_value.npy", "numeral_label.npy")
-    saved_model = tf.keras.models.load_model('hindi-num.model')
+def test_model():
+    values, labels = get_data("data/numeral_value.npy", "data/numeral_label.npy")
+    saved_model = tf.keras.models.load_model('data/hindi-num.model')
     index = random.randint(0, len(values))
     prediction = saved_model.predict(values)
     grid = 3
@@ -68,4 +68,5 @@ def test():
     plt.show()
 
 
-test()
+train_model()
+test_model()
