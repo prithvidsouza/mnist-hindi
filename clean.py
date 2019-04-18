@@ -24,15 +24,11 @@ def clean_data(labels_path):
         clean_data["consonants"] = content[28:64]
         return clean_data
 
-def convert_to_npy():
+def convert_to_npy(current_selection,valuename,labelname):
     '''
     This mthod will scan the given directory and looks for images
     then it in turn converts it to numpy arrays as labels and values and stores them
     '''
-    current_selection = pathinfo['numerals_path']
-    valuename = "numeral_value"
-    labelname = "numeral_label"
-
     newlist = clean_data(pathinfo['labels_path'])
     value = []
     label = []
@@ -48,4 +44,6 @@ def convert_to_npy():
     np.save("data/%s.npy"%(valuename), value)
     np.save("data/%s.npy"%(labelname), label)
 
-convert_to_npy()
+convert_to_npy(pathinfo['numerals_path'],'numeral_value',"numeral_label") # Cleaning the numeral data
+convert_to_npy(pathinfo['consonent_path'],'consonant_value',"consonant_label") # Cleaning the consonant data
+convert_to_npy(pathinfo['vowels_path'],'vowel_value',"vowel_label") # Cleaning the vowel data
