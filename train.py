@@ -3,26 +3,39 @@ import cv2 as opencv
 import numpy as np
 import random
 import os
-
+import sys
+import argparse
 import tensorflow.keras as keras
 import tensorflow as tf
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 print("Using tensorflow :", tf.__version__)
 
-'''
-Change the following values according to your needs
----------------------------------------------------
-consonants : consonant_value.npy, consonant_label.npy, consonant_model.model, end_nodes = 37
-vowels : vowel_value.npy, vowel_label.npy, vowel_model.model, end_nodes = 13
-numerical : numerical_value.npy, numerical_label.npy, numerical_model.model, end_nodes = 10
-Make sure to run python3 clean.py to generate numpy arrays.
-'''
-value_name = "consonant_value.npy"
-label_name = "consonant_label.npy"
-model_name = "consonant_model.model"
-label_type = "consonants"
-end_nodes = 37
+# Parsing the arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("dataset", help="Name of training and testing dataset. USAGE: v - vowel, c - consonant, n - numeral")
+val = parser.parse_args()
+if val.dataset == "v":
+    print("Using vowel dataset. .")
+    value_name = "vowel_value.npy"
+    label_name = "vowel_label.npy"
+    model_name = "vowel_model.model"
+    label_type = "vowels"
+    end_nodes = 13
+elif val.dataset == "c":
+    print("Using consonant dataset. .")
+    value_name = "consonant_value.npy"
+    label_name = "consonant_label.npy"
+    model_name = "consonant_model.model"
+    label_type = "consonants"
+    end_nodes = 37
+else:
+    print("Using numeral dataset. .")
+    value_name = "numeral_value.npy"
+    label_name = "numeral_label.npy"
+    model_name = "numeral_model.model"
+    label_type = "numerals"
+    end_nodes = 10
 
 def get_data(values, labels):
     '''
