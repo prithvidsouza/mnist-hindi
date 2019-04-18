@@ -10,6 +10,9 @@ import tensorflow as tf
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 print("Using ", tf.__version__)
 
+matrixvalue = "data/numeral_value.npy"
+matrixlabel = "data/numeral_label.npy"
+output_model_name = "model.model"
 
 def get_data(values, labels):
     '''
@@ -26,7 +29,7 @@ def showimageplots():
     This method is for inspection of numpy data. This will get the numpy array that
     is generated and randomly selects the samples and plots them in the graph
     '''
-    values, labels = get_data("data/numeral_value.npy", "data/numeral_label.npy")
+    values, labels = get_data(matrixvalue, matrixlabel)
     print("Length of training data : %d\nLength of training labels : %d" %
           (len(values), len(labels)))
     grid = 2 # Grid of images required. Default is 2 -> 2 X 2 matrix
@@ -58,7 +61,7 @@ def train_model():
     This method will train the compiled model based on the numpy arrays that is generated
     with values and labels. And then trained model is saved in data/hindi-num.model
     '''
-    values, labels = get_data("data/numeral_value.npy", "data/numeral_label.npy")
+    values, labels = get_data(matrixvalue, matrixlabel)
     values = tf.keras.utils.normalize(values, axis=1)
     model = get_model()
     print(values.shape, labels.shape)
@@ -67,7 +70,7 @@ def train_model():
     history = model.fit(values, labels, epochs=5)
     print("Test Loss :", history)
     print("Test Accuracy :", history)
-    model.save("data/hindi-num.model")
+    model.save("data/%s"%(output_model_name))
 
 
 def test_model():
@@ -75,8 +78,8 @@ def test_model():
     This method will load the saved model and test the model with randomly fetched
     values from the numpy array and plots them in the graph
     '''
-    values, labels = get_data("data/numeral_value.npy", "data/numeral_label.npy")
-    saved_model = tf.keras.models.load_model('data/hindi-num.model')
+    values, labels = get_data(matrixvalue, matrixlabel)
+    saved_model = tf.keras.models.load_model('data/%s'%(output_model_name))
     prediction = saved_model.predict(values)
     grid = 3
     for i in range(1, grid*grid+1):
