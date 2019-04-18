@@ -1,5 +1,5 @@
-*dataset
-*.npy
-env
 .vscode
+*dataset
+env
 *.model
+*.npy
