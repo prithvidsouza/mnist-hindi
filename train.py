@@ -8,11 +8,21 @@ import tensorflow.keras as keras
 import tensorflow as tf
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-print("Using ", tf.__version__)
+print("Using tensorflow :", tf.__version__)
 
-matrixvalue = "data/numeral_value.npy"
-matrixlabel = "data/numeral_label.npy"
-output_model_name = "model.model"
+'''
+Change the following values according to your needs
+---------------------------------------------------
+consonants : consonant_value.npy, consonant_label.npy, consonant_model.model, end_nodes = 37
+vowels : vowel_value.npy, vowel_label.npy, vowel_model.model, end_nodes = 13
+numerical : numerical_value.npy, numerical_label.npy, numerical_model.model, end_nodes = 10
+Make sure to run python3 clean.py to generate numpy arrays.
+'''
+value_name = "consonant_value.npy"
+label_name = "consonant_label.npy"
+model_name = "consonant_model.model"
+label_type = "consonants"
+end_nodes = 37
 
 def get_data(values, labels):
     '''
@@ -23,6 +33,20 @@ def get_data(values, labels):
     labels = np.load(labels)
     return (values, labels)
 
+def get_label_classes(labels_path):
+    '''
+    This method will import labels.csv from the dataset and retreive the clean label classes
+    and return them as a dictionary
+    '''
+    with open("%s" % (labels_path)) as labels:
+        content = [value.replace(",,,", "")
+                   for value in labels.read().split("\n") if value != ",,,"]
+        clean_data = {}
+        clean_data["labels"] = content[1]
+        clean_data["numbers"] = content[2:12]
+        clean_data["vowels"] = content[14:26]
+        clean_data["consonants"] = content[28:64]
+        return clean_data
 
 def showimageplots():
     '''
@@ -48,7 +72,7 @@ def get_model():
     model = keras.Sequential([
         keras.layers.Flatten(input_shape=(28, 28)),
         keras.layers.Dense(128, activation=tf.nn.relu),
-        keras.layers.Dense(10, activation=tf.nn.softmax)
+        keras.layers.Dense(end_nodes, activation=tf.nn.softmax)
     ])
     model.compile(optimizer='adam',
                   loss='sparse_categorical_crossentropy',
@@ -56,38 +80,46 @@ def get_model():
     return model
 
 
-def train_model():
+def train_model(matrixvalue, matrixlabel, model_name):
     '''
     This method will train the compiled model based on the numpy arrays that is generated
     with values and labels. And then trained model is saved in data/hindi-num.model
     '''
-    values, labels = get_data(matrixvalue, matrixlabel)
+    train_epoch = 50
+    values, labels = get_data("data/%s"%(matrixvalue), "data/%s"%(matrixlabel))
     values = tf.keras.utils.normalize(values, axis=1)
     model = get_model()
     print(values.shape, labels.shape)
-    session = model.fit(values, labels, epochs=20)
+    session = model.fit(values, labels, epochs=50)
     print("----\nTesting\n----")
-    history = model.fit(values, labels, epochs=5)
+    history = model.fit(values, labels, epochs=train_epoch)
     print("Test Loss :", history)
     print("Test Accuracy :", history)
-    model.save("data/%s"%(output_model_name))
+    model.save("data/%s"%(model_name))
+
+def get_character(number):
+    labels_path = 'data/devanagari-character-dataset/labels.csv'
+    newlist = get_label_classes(labels_path)[label_type]
+    for row in newlist:
+        if int(row.split(",")[0]) == number:
+            print(row.split(",")[2])
+            return row.split(",")[2]
 
 
-def test_model():
+def test_model(matrixvalue, matrixlabel, model_name):
     '''
     This method will load the saved model and test the model with randomly fetched
     values from the numpy array and plots them in the graph
     '''
-    values, labels = get_data(matrixvalue, matrixlabel)
-    saved_model = tf.keras.models.load_model('data/%s'%(output_model_name))
+    values, labels = get_data("data/%s"%(matrixvalue), "data/%s"%(matrixlabel))
+    saved_model = tf.keras.models.load_model('data/%s'%(model_name))
     prediction = saved_model.predict(values)
     grid = 3
     for i in range(1, grid*grid+1):
         index = random.randint(0, len(values))
-        plt.subplot(grid, grid, i).set_title(np.argmax(prediction[index]))
+        plt.subplot(grid, grid, i).set_title(get_character(np.argmax(prediction[index])))
         plt.imshow(values[index], cmap="gray", interpolation="nearest")
     plt.show()
 
-
-train_model() # This will generate the trained model
-test_model() # This will load the model and predict the values
+train_model(value_name, label_name, model_name) # This will generate the trained model
+test_model(value_name, label_name, model_name) # This will load the model and predict the values
