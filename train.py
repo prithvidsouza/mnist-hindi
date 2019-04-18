@@ -56,7 +56,7 @@ def get_label_classes(labels_path):
                    for value in labels.read().split("\n") if value != ",,,"]
         clean_data = {}
         clean_data["labels"] = content[1]
-        clean_data["numbers"] = content[2:12]
+        clean_data["numerals"] = content[2:12]
         clean_data["vowels"] = content[14:26]
         clean_data["consonants"] = content[28:64]
         return clean_data
