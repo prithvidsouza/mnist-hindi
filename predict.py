@@ -27,7 +27,7 @@ class MainWindow():
         self.clearbtn.pack()
         self.thickness = 8
         self.draw_path = "drawings"
-        self.current_model = "c"
+        self.current_model = "n"
         self.model_names = { "n" : ("numeral_model.model","numerals"), "v" : ("vowel_model.model","vowels"), "c" : ("consonant_model.model","consonants") }
 
     def draw(self,event):
@@ -47,9 +47,14 @@ class MainWindow():
     def get_image(self):
         resized = convert_image(self.draw_path, self.canvas) # Get resized image from the canvas
         predict_arr = self.predict(resized) # Predict values from it
+        # plt.plot()
+        xvals = [i for i in range(len(predict_arr[0]))]
+        print(xvals,predict_arr[0])
         getmax = numpy.argmax(predict_arr) # Get greatest index
         prediction = get_character(getmax,  self.model_names[self.current_model][1])
         print(prediction)
+        plt.plot(xvals,predict_arr[0])
+        plt.show()
 
     def start(self):
         self.window.mainloop()

@@ -1,3 +1,5 @@
+from package.data import get_character
+from package.data import get_data
 import matplotlib.pyplot as plt
 import cv2 as opencv
 import numpy as np
@@ -11,8 +13,6 @@ import tensorflow as tf
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 print("Using tensorflow :", tf.__version__)
 
-from package.data import get_data
-from package.data import get_character
 
 def get_model():
     '''
@@ -35,7 +35,7 @@ def train_model(matrixvalue, matrixlabel, model_name, test_epoch=5, train_epoch=
     This method will train the compiled model based on the numpy arrays that is generated
     with values and labels. And then trained model is saved in data/hindi-num.model
     '''
-    values, labels = get_data("data/%s"%(matrixvalue), "data/%s"%(matrixlabel))
+    values, labels = get_data("data/%s" % (matrixvalue), "data/%s" % (matrixlabel))
     values = tf.keras.utils.normalize(values, axis=1)
     model = get_model()
     print(values.shape, labels.shape)
@@ -44,7 +44,7 @@ def train_model(matrixvalue, matrixlabel, model_name, test_epoch=5, train_epoch=
     history = model.fit(values, labels, epochs=test_epoch)
     print("Test Loss :", history)
     print("Test Accuracy :", history)
-    model.save("data/%s"%(model_name))
+    model.save("data/%s" % (model_name))
 
 
 def test_model(matrixvalue, matrixlabel, model_name, label_type):
@@ -52,14 +52,14 @@ def test_model(matrixvalue, matrixlabel, model_name, label_type):
     This method will load the saved model and test the model with randomly fetched
     values from the numpy array and plots them in the graph
     '''
-    values, labels = get_data("data/%s"%(matrixvalue), "data/%s"%(matrixlabel))
-    saved_model = tf.keras.models.load_model('data/%s'%(model_name))
+    values, labels = get_data("data/%s" % (matrixvalue), "data/%s" % (matrixlabel))
+    saved_model = tf.keras.models.load_model('data/%s' % (model_name))
     prediction = saved_model.predict(values)
     grid = 3
     for i in range(1, grid*grid+1):
         index = random.randint(0, len(values))
         getmax = np.argmax(prediction[index])
-        plt.subplot(grid, grid, i).set_title(get_character(getmax,label_type))
+        plt.subplot(grid, grid, i).set_title(get_character(getmax, label_type))
         plt.imshow(values[index], cmap="gray", interpolation="nearest")
     plt.show()
 
@@ -67,7 +67,8 @@ def test_model(matrixvalue, matrixlabel, model_name, label_type):
 if __name__ == "__main__":
     # Parsing the arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("dataset", help="Name of training and testing dataset. USAGE: -v - vowel, -c - consonant, -n - numeral")
+    parser.add_argument(
+        "dataset", help="Name of training and testing dataset. USAGE: -v - vowel, -c - consonant, -n - numeral")
     val = parser.parse_args()
     if val.dataset == "-v":
         print("Using vowel dataset. .")
@@ -92,5 +93,6 @@ if __name__ == "__main__":
         end_nodes = 10
 
     # Calling the methods
-    train_model(value_name, label_name, model_name) # This will generate the trained model
-    test_model(value_name, label_name, model_name, label_type) # This will load the model and predict the values
+    train_model(value_name, label_name, model_name)  # This will generate the trained model
+    # This will load the model and predict the values
+    test_model(value_name, label_name, model_name, label_type)
