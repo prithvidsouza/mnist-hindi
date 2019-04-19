@@ -21,12 +21,6 @@ class MainWindow():
         self.thickness = 8
         self.draw_path = "drawings"
 
-    def draw(self,event):
-        self.canvas.create_oval(event.x, event.y, event.x + self.thickness, event.y + self.thickness, fill="black")
-
-    def clear_canvas(self):
-        print("Clearing canvas")
-
     def convert_image(self, pngimg):
         loadedimg = opencv.cvtColor(pngimg, opencv.COLOR_BGR2GRAY)
         img = 255 - loadedimg
@@ -36,11 +30,11 @@ class MainWindow():
             print(xe,ye,we,he)
             crop_img = loadedimg[ye:ye+he, xe:xe+we]
             resized_img = opencv.resize(crop_img, (28,28))
-            print(resized_img.shape)
             plt.imshow(resized_img, cmap="gray", interpolation="nearest")
             plt.show()
+            return resized_img
 
-    def get_image(self):
+    def save_image(self):
         if not os.path.isdir(self.draw_path):
             os.mkdir(self.draw_path)
         timestamp = time.time()
@@ -49,11 +43,20 @@ class MainWindow():
         img = Image.open("{}.eps".format(name))
         img.save("{}.png".format(name),"png")
         os.remove("{}.eps".format(name))
-        print("{}.png".format(name))
-        loadedimg = opencv.imread("{}.png".format(name))
-        os.remove("{}.png".format(name))
-        # print(type(loadedimg), loadedimg.shape)
-        self.convert_image(loadedimg)
+        print("Saved canvas as : {}.png".format(name))
+        return name + ".png"
+
+    def draw(self,event):
+        self.canvas.create_oval(event.x, event.y, event.x + self.thickness, event.y + self.thickness, fill="black")
+
+    def clear_canvas(self):
+        self.canvas.delete("all")
+
+    def get_image(self):
+        filename = self.save_image()
+        loadedimg = opencv.imread("{}".format(filename))
+        os.remove("{}".format(filename)) # This deletes the png image
+        resized = self.convert_image(loadedimg)
 
     def start(self):
         self.window.mainloop()
