@@ -46,7 +46,7 @@ class MainWindow():
         self.canvas.postscript(file="{}.eps".format(name),colormode="color")
         img = Image.open("{}.eps".format(name))
         img.save("{}.png".format(name),"png")
-        os.remove("{}.eps".format(name))
+        # os.remove("{}.eps".format(name))
         print("Saved canvas as : {}.png".format(name))
         return name + ".png"
 
