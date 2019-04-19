@@ -4,3 +4,4 @@ env
 *.model
 *.npy
 *.eps
+drawings/*.png
