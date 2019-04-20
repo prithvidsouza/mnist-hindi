@@ -8,6 +8,7 @@ import random
 import time
 import datetime
 import csv
+import tensorflow as tf
 
 class Data_Cleaner():
     def __init__(self):
@@ -74,6 +75,7 @@ class Data_Cleaner():
                     label = label[1]
                 else:
                     label = label[2]
+                image = tf.keras.utils.normalize(image, axis=1)
                 self.training_instances += 1
                 numpy_array_list.append((image,label))
                 self.add_label(label)
@@ -94,6 +96,7 @@ class Data_Cleaner():
                     label = label[1]
                 else:
                     label = label[2]
+                image = tf.keras.utils.normalize(image, axis=1)
                 self.testing_instances += 1
                 numpy_array_list.append((image,label))
         random.shuffle(numpy_array_list)
