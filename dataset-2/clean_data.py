@@ -1,3 +1,6 @@
+# Author : Velan Salis
+# NMAM Institute of Technology, Nitte
+
 import os
 import matplotlib.pyplot as plt
 import cv2
@@ -26,6 +29,25 @@ class Data_Cleaner():
     def create_clean_directory(self):
         if not os.path.exists(self.clean_directory):
             os.mkdir(self.clean_directory)
+
+    def log_data_cleaning_stats(self):
+        logstring = "\n"
+        start_time_in_seconds = datetime.datetime.fromtimestamp(self.reading_start_time).strftime('%M:%S.%f')[:-4]
+        end_time_in_seconds = datetime.datetime.fromtimestamp(self.reading_end_time).strftime('%M:%S.%f')[:-4]
+        logstring += "Data Cleaning Stats for CLEAN_{} : \n".format(self.reading_start_time)
+        logstring += "Process ID : CLEAN_{}\n".format(self.reading_start_time)
+        logstring += "Reading started : {}\n".format(start_time_in_seconds)
+        logstring += "Reading end : {}\n".format(end_time_in_seconds)
+        logstring += "Total time elapsed : {}\n".format(self.total_time_elapsed)
+        logstring += "Clean directory : ./{}\n".format(self.clean_directory)
+        logstring += "Clean training dataset name : {}.npy\n".format(self.output_training_set_name)
+        logstring += "Clean testing dataset name : {}.npy\n".format(self.output_testing_set_name)
+        logstring += "Total instances : {}\n".format(self.training_instances + self.testing_instances)
+        logstring += "Total training instances : {}\n".format(self.training_instances)
+        logstring += "Total testing instances : {}\n".format(self.testing_instances)
+        with open("{}/clean_logfile.txt".format(self.clean_directory),"a") as file:
+            file.write(logstring)
+        print(logstring)
 
     def generate_training_data(self):
         numpy_array_list = []
@@ -63,26 +85,20 @@ class Data_Cleaner():
                 numpy_array_list.append((image,label))
         np.save("{}/{}".format(self.clean_directory,self.output_testing_set_name), numpy_array_list)
 
-    def log_data_cleaning_stats(self):
-        logstring = ""
-        start_time_in_seconds = datetime.datetime.fromtimestamp(self.reading_start_time).strftime('%M:%S.%f')[:-4]
-        end_time_in_seconds = datetime.datetime.fromtimestamp(self.reading_end_time).strftime('%M:%S.%f')[:-4]
-        logstring += "Data Cleaning Stats for CLEAN_{} : \n".format(self.reading_start_time)
-        logstring += "Total training instances : {}\n".format(self.training_instances)
-        logstring += "Total testing instances : {}\n".format(self.testing_instances)
-        logstring += "Reading started : {}\n".format(start_time_in_seconds)
-        logstring += "Reading end : {}\n".format(end_time_in_seconds)
-        logstring += "Total time elapsed : {}\n".format(self.total_time_elapsed)
-        with open("{}/clean_logfile.txt".format(self.clean_directory),"a") as file:
-            file.write(logstring)
-
     def clean_and_convert_data(self):
-        self.reading_start_time = time.time()
-        self.generate_training_data()
-        self.generate_testing_data()
-        self.reading_end_time = time.time()
-        self.total_time_elapsed = self.reading_end_time - self.reading_start_time
-        self.log_data_cleaning_stats()
+        if not os.path.exists("data/{}".format(self.dataset_directory)):
+            print("No dataset found in directory ./data for conversion and cleaning")
+            print("Download the dataset from the following link : http://archive.ics.uci.edu/ml/machine-learning-databases/00389/")
+            print("Place it in the ./data folder. (if not exists, create one)")
+            print("Then try running the command again.")
+            return
+        else:
+            self.reading_start_time = time.time()
+            self.generate_training_data()
+            self.generate_testing_data()
+            self.reading_end_time = time.time()
+            self.total_time_elapsed = self.reading_end_time - self.reading_start_time
+            self.log_data_cleaning_stats()
 
     def check_for_consistency(self):
         numpy_array_list = np.load("{}.npy".format(self.output_training_set_name))
@@ -92,6 +108,7 @@ class Data_Cleaner():
         print(numpy_array_list[random_index][1])
         plt.show()
 
+# Main Loop
 if __name__ == "__main__":
     data_cleaner = Data_Cleaner()
     data_cleaner.clean_and_convert_data()
