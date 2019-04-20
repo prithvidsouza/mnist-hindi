@@ -14,6 +14,8 @@ dataset - 2 : [archive.ics.uci.edu](http://archive.ics.uci.edu/ml/machine-learni
 
 ### Usage :
 ```
+cd dataset-1
+
 python3 clean.py
 
 python3 train.py <argument>
