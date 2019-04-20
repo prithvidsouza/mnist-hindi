@@ -34,4 +34,5 @@ python3 predict.py
 ```
 python3 clean_data.py
 python3 train_data.py
+python3 predict_data.py
 ```

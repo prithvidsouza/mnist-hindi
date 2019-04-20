@@ -11,6 +11,7 @@ dataset-1/drawings/*
 dataset-2/data/*Dataset
 dataset-2/processed/*
 dataset-2/trained/*
+dataset-2/drawings/*
 
 # Skipping the environment
 env
