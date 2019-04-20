@@ -1,6 +1,5 @@
 # Author : Velan Salis
 # NMAM Institute of Technology, Nitte
-
 import os
 import matplotlib.pyplot as plt
 import cv2
@@ -8,6 +7,7 @@ import numpy as np
 import random
 import time
 import datetime
+import csv
 
 class Data_Cleaner():
     def __init__(self):
@@ -24,11 +24,22 @@ class Data_Cleaner():
         self.reading_end_time = 0
         self.total_time_elapsed = 0
         self.clean_directory = "processed"
+        self.labels = []
         self.create_clean_directory()
 
     def create_clean_directory(self):
         if not os.path.exists(self.clean_directory):
             os.mkdir(self.clean_directory)
+
+    def add_label(self, label_name):
+        if label_name not in self.labels:
+            print("Added label {}".format(label_name))
+            self.labels.append(label_name)
+
+    def write_labels(self):
+        with open("{}/labels.csv".format(self.clean_directory),"w") as csvfile:
+            csvptr = csv.writer(csvfile)
+            csvptr.writerows([self.labels])
 
     def log_data_cleaning_stats(self):
         logstring = "\n"
@@ -55,7 +66,7 @@ class Data_Cleaner():
             current_directory = "{}/{}".format(self.training_set_path,character_dir_pointer)
             image_file_list = os.listdir(current_directory)
             for image_file_pointer in image_file_list:
-                print("Reading {}/{}".format(current_directory,image_file_pointer))
+                # print("Reading {}/{}".format(current_directory,image_file_pointer))
                 image = cv2.imread(current_directory + "/" + image_file_pointer)
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 label = character_dir_pointer.split("_")
@@ -65,6 +76,8 @@ class Data_Cleaner():
                     label = label[2]
                 self.training_instances += 1
                 numpy_array_list.append((image,label))
+                self.add_label(label)
+        random.shuffle(numpy_array_list)
         np.save("{}/{}".format(self.clean_directory,self.output_training_set_name), numpy_array_list)
 
     def generate_testing_data(self):
@@ -73,7 +86,7 @@ class Data_Cleaner():
             current_directory = "{}/{}".format(self.testing_set_path,character_dir_pointer)
             image_file_list = os.listdir(current_directory)
             for image_file_pointer in image_file_list:
-                print("Reading {}/{}".format(current_directory,image_file_pointer))
+                # print("Reading {}/{}".format(current_directory,image_file_pointer))
                 image = cv2.imread(current_directory + "/" + image_file_pointer)
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 label = character_dir_pointer.split("_")
@@ -83,6 +96,7 @@ class Data_Cleaner():
                     label = label[2]
                 self.testing_instances += 1
                 numpy_array_list.append((image,label))
+        random.shuffle(numpy_array_list)
         np.save("{}/{}".format(self.clean_directory,self.output_testing_set_name), numpy_array_list)
 
     def clean_and_convert_data(self):
@@ -99,6 +113,7 @@ class Data_Cleaner():
             self.reading_end_time = time.time()
             self.total_time_elapsed = self.reading_end_time - self.reading_start_time
             self.log_data_cleaning_stats()
+            self.write_labels()
 
     def check_for_consistency(self):
         numpy_array_list = np.load("{}.npy".format(self.output_training_set_name))
