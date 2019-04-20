@@ -1,8 +1,0 @@
-.vscode
-*dataset
-env
-*.model
-*.npy
-*.eps
-drawings/*.png
-__pycache__

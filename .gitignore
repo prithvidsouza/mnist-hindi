@@ -1,0 +1,16 @@
+processed/*
+
+# Auto-gen files
+__pycache__
+
+# Dataset-1
+dataset-1/data/*dataset
+dataset-1/data/*.model
+dataset-1/data/*.npy
+dataset-1/drawings/*
+
+# Dataset-2
+dataset-2/data/*Dataset
+dataset-2/processed/*
+
+env
