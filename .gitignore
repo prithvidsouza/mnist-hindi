@@ -1,5 +1,3 @@
-processed/*
-
 # Auto-gen files
 __pycache__
 
@@ -13,4 +11,5 @@ dataset-1/drawings/*
 dataset-2/data/*Dataset
 dataset-2/processed/*
 
+# Skipping the environment
 env
