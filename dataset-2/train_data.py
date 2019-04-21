@@ -31,7 +31,7 @@ class Data_Trainer():
         self.elapsed_time = 0
         self.accuracy = 0
         self.loss = 1
-        self.training_epochs = 20
+        self.training_epochs = 3
         self.trained_directory_name = "trained"
         self.create_trained_directory()
 

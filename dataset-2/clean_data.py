@@ -67,7 +67,7 @@ class Data_Cleaner():
             current_directory = "{}/{}".format(self.training_set_path,character_dir_pointer)
             image_file_list = os.listdir(current_directory)
             for image_file_pointer in image_file_list:
-                # print("Reading {}/{}".format(current_directory,image_file_pointer))
+                print("Reading {}/{}".format(current_directory,image_file_pointer))
                 image = cv2.imread(current_directory + "/" + image_file_pointer)
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 label = character_dir_pointer.split("_")
@@ -88,7 +88,7 @@ class Data_Cleaner():
             current_directory = "{}/{}".format(self.testing_set_path,character_dir_pointer)
             image_file_list = os.listdir(current_directory)
             for image_file_pointer in image_file_list:
-                # print("Reading {}/{}".format(current_directory,image_file_pointer))
+                print("Reading {}/{}".format(current_directory,image_file_pointer))
                 image = cv2.imread(current_directory + "/" + image_file_pointer)
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
                 label = character_dir_pointer.split("_")
