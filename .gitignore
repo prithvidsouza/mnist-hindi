@@ -13,5 +13,11 @@ dataset-2/processed/*
 dataset-2/trained/*
 dataset-2/drawings/*
 
+# Dataset-2
+dataset2-conv/data/*Dataset
+dataset2-conv/processed/*
+dataset2-conv/trained/*
+dataset2-conv/drawings/*
+
 # Skipping the environment
 env
