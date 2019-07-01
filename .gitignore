@@ -1,23 +1,18 @@
-# Auto-gen files
 __pycache__
 
-# Dataset-1
-dataset-1/data/*dataset
-dataset-1/data/*.model
-dataset-1/data/*.npy
-dataset-1/drawings/*
+d1-nn/data/*
+d1-nn/data/*.model
+d1-nn/data/*.npy
+d1-nn/drawings/*
 
 # Dataset-2
-dataset-2/data/*Dataset
-dataset-2/processed/*
-dataset-2/trained/*
-dataset-2/drawings/*
+d2-nn/data/*
+d2-nn/processed/*
+d2-nn/trained/*
+d2-nn/drawings/*
 
 # Dataset-2
-dataset2-conv/data/*Dataset
-dataset2-conv/processed/*
-dataset2-conv/trained/*
-dataset2-conv/drawings/*
-
-# Skipping the environment
-env
+d2-conv/data/*Dataset
+d2-conv/processed/*
+d2-conv/trained/*
+d2-conv/drawings/*
