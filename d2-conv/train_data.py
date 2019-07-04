@@ -28,18 +28,20 @@ def get_model():
     model.add(tf.keras.layers.Conv2D(64, (3, 3), activation='relu'))
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(64, activation='relu'))
+    model.add(tf.keras.layers.Dropout(0.3))
     model.add(tf.keras.layers.Dense(46, activation='softmax'))
     return model
 
 def train_data():
     model = get_model()
     train_images, train_labels, test_images, test_labels = get_data()
-
     train_images = np.reshape(train_images, (78200, 32, 32, 1))
     test_images = np.reshape(test_images, (13800, 32, 32, 1))
-
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    model.fit(train_images, train_labels, epochs=5)
+    
+    model.summary()
+    
+    model.fit(train_images, train_labels, epochs=10, validation_data=(test_images, test_labels))
     test_loss, test_acc = model.evaluate(test_images, test_labels)
     print('Accuracy : {}'.format(test_acc))
     print('Loss : {}'.format(test_loss))
