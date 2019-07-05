@@ -7,8 +7,8 @@
 
 ### Usage :
 ```
-docker build -t tf-python-ml
-docker run -it -v $(pwd):/usr/src/app tf-python-ml bash
+docker build -t python/tensorflow .
+docker run --rm -it -v $(pwd):/usr/src/app python/tensorflow bash
 python clean.py
 python train.py
 python predict.py
